@@ -22,7 +22,7 @@ object Starter {
     val sdcardCommand get() = commandInternal[1]!!
 
     val adbCommand: String
-        get() = "adb shell $sdcardCommand"
+        get() = "adb root && adb shell $sdcardCommand"
 
     fun writeSdcardFiles(context: Context) {
         if (commandInternal[1] != null) {
