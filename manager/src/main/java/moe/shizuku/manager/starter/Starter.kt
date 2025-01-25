@@ -40,8 +40,8 @@ object Starter {
         val dir = filesDir.parentFile ?: throw IOException("$filesDir parentFile returns null")
         val starter = copyStarter(context, File(dir, "starter"))
         val sh = writeScript(context, File(dir, "start.sh"), starter)
-        writeScript(content, File(dir, "su"), starter)
-        writeScript(content, File(dir, "supolicy"), starter)
+        writeScript(context, File(dir, "su"), starter)
+        writeScript(context, File(dir, "supolicy"), starter)
         commandInternal[1] = "$dir/su -c $sh"
         logd(commandInternal[1]!!)
     }
