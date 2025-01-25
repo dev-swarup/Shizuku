@@ -40,8 +40,8 @@ object Starter {
         val dir = filesDir.parentFile ?: throw IOException("$filesDir parentFile returns null")
         val starter = copyStarter(context, File(dir, "starter"))
         val sh = writeScript(context, File(dir, "start.sh"), starter)
-        writeScript(context, File(dir, "su"), starter)
-        writeScript(context, File(dir, "supolicy"), starter)
+        writeShellScriptSu(context, File(dir, "su"))
+        writeShellScriptSuPolicy(context, File(dir, "supolicy"))
         commandInternal[1] = "$dir/su -c $sh"
         logd(commandInternal[1]!!)
     }
@@ -117,6 +117,40 @@ object Starter {
         }
         os.flush()
         os.close()
+        return out.absolutePath
+    }
+
+    private fun writeShellScriptSu(context: Context, out: File): String {
+        if (!out.exists()) {
+            out.createNewFile()
+        }
+        val `is` = BufferedReader(InputStreamReader(context.resources.openRawResource(R.raw.su)))
+        val os = PrintWriter(FileWriter(out))
+        var line: String?
+        while (`is`.readLine().also { line = it } != null) {
+            os.println(line)
+        }
+        os.flush()
+        os.close()
+
+        out.setExecutable(true)
+        return out.absolutePath
+    }
+
+    private fun writeShellScriptSuPolicy(context: Context, out: File): String {
+        if (!out.exists()) {
+            out.createNewFile()
+        }
+        val `is` = BufferedReader(InputStreamReader(context.resources.openRawResource(R.raw.supolicy)))
+        val os = PrintWriter(FileWriter(out))
+        var line: String?
+        while (`is`.readLine().also { line = it } != null) {
+            os.println(line)
+        }
+        os.flush()
+        os.close()
+
+        out.setExecutable(true)
         return out.absolutePath
     }
 }
