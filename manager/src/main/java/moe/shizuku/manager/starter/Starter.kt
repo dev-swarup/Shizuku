@@ -22,7 +22,7 @@ object Starter {
     val sdcardCommand get() = commandInternal[1]!!
 
     val adbCommand: String
-        get() = "adb root && adb shell $sdcardCommand"
+        get() = "adb shell $sdcardCommand"
 
     fun writeSdcardFiles(context: Context) {
         if (commandInternal[1] != null) {
@@ -40,7 +40,9 @@ object Starter {
         val dir = filesDir.parentFile ?: throw IOException("$filesDir parentFile returns null")
         val starter = copyStarter(context, File(dir, "starter"))
         val sh = writeScript(context, File(dir, "start.sh"), starter)
-        commandInternal[1] = "sh $sh"
+        writeScript(content, File(dir, "su"), starter)
+        writeScript(content, File(dir, "supolicy"), starter)
+        commandInternal[1] = "$dir/su -c $sh"
         logd(commandInternal[1]!!)
     }
 
